@@ -14,6 +14,10 @@ class Carteira extends Model
 	];
 	public function Empresa()
 	{
-		return $this->HasOne(Empresa::class, 'ativo', 'ticker');
+		return $this->HasOne(Empresa::class, 'id', 'ativo_id');
+	}
+	public function Corretora()
+	{
+		return $this->HasOne(Corretora::class, 'id', 'corretora_id');
 	}
 }

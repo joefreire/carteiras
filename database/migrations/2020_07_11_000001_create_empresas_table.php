@@ -14,7 +14,8 @@ class CreateEmpresasTable extends Migration
     public function up()
     {
         Schema::create('empresas', function (Blueprint $table) {
-            $table->string('ticker')->primary();
+            $table->increments('id');
+            $table->string('ticker');
             $table->string('nome')->nullable();
             $table->string('site')->nullable();
             $table->string('setor')->nullable();

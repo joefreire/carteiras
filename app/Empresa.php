@@ -8,5 +8,8 @@ class Empresa extends Model
 {
 	protected $table = 'empresas';
 	public $timestamps = true;
-	protected $primaryKey = 'ticker';
+	protected $primaryKey = 'id';
+	protected $guarded = [
+		'id'
+	];
 }

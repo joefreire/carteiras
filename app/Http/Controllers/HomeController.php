@@ -38,7 +38,11 @@ class HomeController extends Controller
             ->join('corretoras', 'corretoras.id', '=', 'carteiras.corretora_id')
             ->select('carteiras.*');
 
-            return Datatables::of($data)->make(true);
+            return Datatables::of($data)
+            ->addColumn('NomeMes', function ($lista) {
+                return $lista->NomeMes;
+            })
+            ->make(true);
         }
         
         return view('carteiras');

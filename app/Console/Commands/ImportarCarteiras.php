@@ -53,28 +53,32 @@ class ImportarCarteiras extends Command
             $periodo = explode(' ', $mes);
             $mesConvertido = $this->converteMes($periodo[0]);
             $ano = $periodo[1];
+
             foreach ($data as $corretoras) {
                 foreach ($corretoras as $corretora => $ativo) {
-                    $corretora = strtoupper($this->tirarAcentos($corretora));
-                    $corretoraModel = Corretora::where('nome', $corretora)->first();
-                    if(empty($corretoraModel)){
-                        $corretoraModel = Corretora::create([
-                            'nome' => $corretora
-                        ]);
-                    }
-                    $empresaModel = Empresa::where('ticker', $ativo)->first();
-                    if(empty($empresaModel)){
-                        $empresaModel = Empresa::create([
-                            'ticker' => $ativo
-                        ]);
-                    }
+                    dump($mesConvertido, $ano, $corretora, $ativo);
+                    if(!empty($ativo) && !empty($corretora)){
+                        $corretora = strtoupper($this->tirarAcentos($corretora));
+                        $corretoraModel = Corretora::where('nome', $corretora)->first();
+                        if(empty($corretoraModel)){
+                            $corretoraModel = Corretora::create([
+                                'nome' => $corretora
+                            ]);
+                        }
+                        $empresaModel = Empresa::where('ticker', $ativo)->first();
+                        if(empty($empresaModel)){
+                            $empresaModel = Empresa::create([
+                                'ticker' => $ativo
+                            ]);
+                        }
 
-                    $carteira = Carteira::create([
-                        'mes' => $mesConvertido,
-                        'ano' => $ano,
-                        'ativo_id' => $empresaModel->id,
-                        'corretora_id' => $corretoraModel->id,
-                    ]);
+                        $carteira = Carteira::create([
+                            'mes' => $mesConvertido,
+                            'ano' => $ano,
+                            'ativo_id' => $empresaModel->id,
+                            'corretora_id' => $corretoraModel->id,
+                        ]);
+                    }
                 }
             }
         }
@@ -94,6 +98,9 @@ class ImportarCarteiras extends Command
             return 2;            
             break;
             case 'Marco':
+            return 3;            
+            break;
+            case 'Março':
             return 3;            
             break;
             case 'Abril':
@@ -126,33 +133,33 @@ class ImportarCarteiras extends Command
         }
     }
     public function tirarAcentos($text) {
-    $utf8 = array(
-        '/[áàâãªäāẵ]/u'   =>   'a',
-        '/[ÁÀÂÃÄ]/u'    =>   'A',
-        '/[ÍÌÎÏ]/u'     =>   'I',
-        '/[íìîï]/u'     =>   'i',
-        '/[éèêë]/u'     =>   'e',
-        '/[ÉÈÊË]/u'     =>   'E',
-        '/[óòôõºö]/u'   =>   'o',
-        '/[ÓÒÔÕÖ]/u'    =>   'O',
-        '/[úùûü]/u'     =>   'u',
-        '/[ÚÙÛÜ]/u'     =>   'U',
-        '/&/'           =>   'e',
-        '/ç/'           =>   'c',
-        '/Ç/'           =>   'C',
-        '/ñ/'           =>   'n',
-        '/Ñ/'           =>   'N',
-        "/'/"           =>   '',
-        '/"/'           =>   '',
+        $utf8 = array(
+            '/[áàâãªäāẵ]/u'   =>   'a',
+            '/[ÁÀÂÃÄ]/u'    =>   'A',
+            '/[ÍÌÎÏ]/u'     =>   'I',
+            '/[íìîï]/u'     =>   'i',
+            '/[éèêë]/u'     =>   'e',
+            '/[ÉÈÊË]/u'     =>   'E',
+            '/[óòôõºö]/u'   =>   'o',
+            '/[ÓÒÔÕÖ]/u'    =>   'O',
+            '/[úùûü]/u'     =>   'u',
+            '/[ÚÙÛÜ]/u'     =>   'U',
+            '/&/'           =>   'e',
+            '/ç/'           =>   'c',
+            '/Ç/'           =>   'C',
+            '/ñ/'           =>   'n',
+            '/Ñ/'           =>   'N',
+            "/'/"           =>   '',
+            '/"/'           =>   '',
         '/º/'           =>   '', // UTF-8 hyphen to "normal" hyphen
         '/–/'           =>   '-', // UTF-8 hyphen to "normal" hyphen
         '/[’‘‹›‚]/u'    =>   ' ', // Literally a single quote
         '/[“”«»„]/u'    =>   ' ', // Double quote
         '/ /'           =>   ' ', // nonbreaking space (equiv. to 0x160)
     );
-    $string = preg_replace(array_keys($utf8), array_values($utf8), $text);
-    $string = preg_replace('/[^A-Za-z0-9 \-]/', '', $string);
+        $string = preg_replace(array_keys($utf8), array_values($utf8), $text);
+        $string = preg_replace('/[^A-Za-z0-9 \-]/', '', $string);
 
-    return $string;
-}
+        return $string;
+    }
 }

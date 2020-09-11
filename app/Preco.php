@@ -4,16 +4,15 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Empresa extends Model
+class Preco extends Model
 {
-	protected $table = 'empresas';
+	protected $table = 'precos';
 	public $timestamps = true;
 	protected $primaryKey = 'id';
 	protected $guarded = [
 		'id'
 	];
-	public function Precos()
-	{
-		return $this->HasMany(Preco::class, 'ativo_id', 'id');
-	}
+	protected $dates = [
+		'data',
+	];
 }

@@ -38,4 +38,27 @@ class Carteira extends Model
 		}
 		return $mes;
 	}
+	public function PrecoMes(){
+		$precos = $this->Empresa->Precos;
+		$precosMes = $precos->filter(function($value){
+			return $value->data->month == $this->mes && $value->data->year == $this->ano;
+		});
+		return $precosMes->first();
+	}
+	public function precoUltimoMes(){
+		$precoMes = $this->PrecoMes();
+		if(!empty($precoMes)){
+			$mes = $precoMes->data->subMonth(1)->month;
+			$ano = $precoMes->data->subMonth(1)->year;
+			$precos = $this->Empresa->Precos;
+			$precosMes = $precos->filter(function($value) use ($ano, $mes){
+				return $value->data->month == $mes && $value->data->year == $ano;
+			});
+			return $precosMes->first()->adjusted_close;
+		}else{
+			return 0;
+		}
+
+
+	}
 }

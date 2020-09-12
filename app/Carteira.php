@@ -38,7 +38,7 @@ class Carteira extends Model
 		}
 		return $mes;
 	}
-	public function PrecoMes(){
+	public function precoMes(){
 		$precos = $this->Empresa->Precos;
 		$precosMes = $precos->filter(function($value){
 			return $value->data->month == $this->mes && $value->data->year == $this->ano;
@@ -46,10 +46,10 @@ class Carteira extends Model
 		return $precosMes->first();
 	}
 	public function precoUltimoMes(){
-		$precoMes = $this->PrecoMes();
+		$precoMes = $this->precoMes();
 		if(!empty($precoMes)){
-			$mes = $precoMes->data->subMonth(1)->month;
-			$ano = $precoMes->data->subMonth(1)->year;
+			$mes = $precoMes->data->subDays(31)->month;
+			$ano = $precoMes->data->subDays(31)->year;
 			$precos = $this->Empresa->Precos;
 			$precosMes = $precos->filter(function($value) use ($ano, $mes){
 				return $value->data->month == $mes && $value->data->year == $ano;
@@ -58,7 +58,15 @@ class Carteira extends Model
 		}else{
 			return 0;
 		}
-
-
+	}
+	public function lucroMensal(){
+		$precoMes = $this->precoMes();
+		$precoUltimoMes = $this->precoUltimoMes();
+		if(!empty($precoMes) && !empty($precoUltimoMes)){
+			$lucro = $precoMes->adjusted_close * 100 / $precoUltimoMes;
+			return round($lucro - 100, 2) . '%';
+		}else{
+			return 0;
+		}
 	}
 }

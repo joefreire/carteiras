@@ -23,6 +23,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::any('/carteiras', 'HomeController@carteiras')->name('carteiras');
 Route::get('/teste', function () {
 
-	$carteira = \App\Carteira::where('ano', 2019)->first();
-	dd($carteira, $carteira->precoUltimoMes());
+	$carteira = \App\Carteira::find(4224);
+	dd($carteira->precoMes(), $carteira->precoUltimoMes());
+	//dd($carteira->precoMes(), $carteira->precoUltimoMes(), $carteira->lucroMensal());
 });

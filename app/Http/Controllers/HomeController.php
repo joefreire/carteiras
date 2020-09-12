@@ -33,16 +33,40 @@ class HomeController extends Controller
     public function carteiras(Request $request, Builder $htmlBuilder)
     {
         if($request->ajax()){
-            $data = Carteira::with('Empresa','Corretora')
+            $data = Carteira::with('Empresa.Precos','Corretora')
             ->join('empresas', 'empresas.id', '=', 'carteiras.ativo_id')
             ->join('corretoras', 'corretoras.id', '=', 'carteiras.corretora_id')
-            ->select('carteiras.*');
-
+            ->select('carteiras.*')
+            ->when(!empty($request->corretora), function ($q) use ($request) {
+                return $q->where('corretora_id', $request->corretora);
+            })
+            ->when(!empty($request->mes_inicio), function ($q) use ($request) {
+                return $q->where('mes', '>=', $request->mes_inicio);
+            })
+            ->when(!empty($request->ano_inicio), function ($q) use ($request) {
+                return $q->where('ano', '>=', $request->ano_inicio);
+            })
+            ->when(!empty($request->ano_fim), function ($q) use ($request) {
+                return $q->where('ano', '<=', $request->ano_fim);
+            })
+            ->when(!empty($request->mes_fim), function ($q) use ($request) {
+                return $q->where('mes', '<=', $request->mes_fim);
+            });
             return Datatables::of($data)
             ->addColumn('NomeMes', function ($lista) {
                 return $lista->NomeMes;
             })
-            ->make(true);
+            // ->addColumn('UltimoPreco', function ($lista) {
+            //     return $lista->precoUltimoMes();
+            // })
+            ->addColumn('PrecoMes', function ($lista) {
+                $precoMes = $lista->precoMes();
+                return !empty($precoMes) ? $precoMes->adjusted_close : 'Sem info';
+            })
+            ->addColumn('Retorno', function ($lista) {
+                return $lista->lucroMensal();
+            })
+            ->toJson();
         }
         
         return view('carteiras');

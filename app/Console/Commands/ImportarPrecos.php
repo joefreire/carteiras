@@ -46,12 +46,16 @@ class ImportarPrecos extends Command
     public function handle()
     {
     	$key = 'COJ3DOLM5BH0B6KY';
-    	$empresas = Empresa::all();
+    	$EmpresaComPrecos = Preco::groupBy('ativo_id')->pluck('ativo_id');
+    	
+    	$empresas = Empresa::whereNotIn('id', $EmpresaComPrecos->toArray())->get();
+
     	$this->output->progressStart(count($empresas));
     	foreach ($empresas as $empresa) {
     		$jsonurl = "https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=" . urlencode($empresa->ticker) . ".SA&apikey=" . $key;
     		$jsonResponse = file_get_contents($jsonurl);
     		$jsonResponseDecode = json_decode($jsonResponse);
+
     		if(isset($jsonResponseDecode->{"Monthly Adjusted Time Series"})){
     			$valores = $jsonResponseDecode->{"Monthly Adjusted Time Series"};
     			foreach ($valores as $data => $valor) {
@@ -73,7 +77,7 @@ class ImportarPrecos extends Command
     			}
     		}
     		echo "PRECOS ".$empresa->ticker;
-    		sleep(5);
+    		sleep(20);
     		$this->output->progressAdvance();
     	}
     	$this->output->progressFinish();

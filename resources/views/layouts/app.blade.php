@@ -18,6 +18,7 @@
 
 
     <link href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
+    @yield('style')
 </head>
 <body>
     <div id="app">
@@ -73,15 +74,51 @@
     </nav>
 
     <main class="py-4">
-        @yield('content')
-    </main>
+        
+        @if(Session::has('error'))
+        <div class="container" style="width: 100%">
+          <div class="alert alert-danger" style="margin-top: 15px;"> 
+            <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+            {!! Session::get('error') !!}
+        </div>
+    </div>
+    @endif
+
+    @if(Session::has('alerta'))
+    <div class="container" style="width: 100%">
+      <div class="alert alert-warning" style="margin-top: 15px;"> 
+        <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+        {!! Session::get('alerta') !!}
+    </div>
+</div>
+@endif
+
+@if(Session::has('success'))
+<div class="alert alert-success" style="margin: 15px;"> 
+  <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+  {!! Session::get('success') !!}
+</div>
+@endif
+
+@if($errors->any())
+<div class="container" style="width: 100%">
+  <div class="alert alert-danger" style="margin: 15px;"> 
+    <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+    @foreach ($errors->all() as $error)
+    <li>{{ $error }}</li>
+    @endforeach
+</div>
+</div>
+@endif
+@yield('content')
+</main>
 </div>
 
 <!-- JS, Popper.js, and jQuery -->
 <script
-  src="https://code.jquery.com/jquery-3.5.1.min.js"
-  integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
-  crossorigin="anonymous"></script>
+src="https://code.jquery.com/jquery-3.5.1.min.js"
+integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 <script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>

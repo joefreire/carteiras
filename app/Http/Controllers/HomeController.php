@@ -71,4 +71,27 @@ class HomeController extends Controller
         
         return view('carteiras');
     }
+    public function novaCarteira()
+    {               
+        return view('novaCarteiras');
+    }
+    public function salvaCarteira(Request $request)
+    {        
+        $request->validate([
+            'mes' => 'required',
+            'ano' => 'required',
+            'corretora_id' => 'required',
+            'empresa_id' => 'required',
+        ]);
+        foreach ($request->empresa_id as $empresa) {
+            Carteira::create([
+                'mes' => $request->mes,
+                'ano' => $request->ano,
+                'corretora_id' => $request->corretora_id,
+                'ativo_id' => $empresa,
+            ]);
+        }     
+
+        return redirect()->back()->with('sucess', 'salvo');
+    }
 }

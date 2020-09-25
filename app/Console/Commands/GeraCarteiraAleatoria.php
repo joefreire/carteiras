@@ -53,7 +53,6 @@ class GeraCarteiraAleatoria extends Command
         $carteirasExistentes = Carteira::where('corretora_id','!=', $corretora->id)->groupBy('mes','ano')->get();
         foreach ($carteirasExistentes as $carteira){
             $ativos = Carteira::where('mes', $carteira->mes)->where('ano',$carteira->ano)->get();
-            dump($carteira->mes, $carteira->ano);
             if($ativos->where('corretora_id', $corretora->id)->count() == 0){
                 $ativos = $ativos->pluck('ativo_id')->toArray();
                 $i = 1;

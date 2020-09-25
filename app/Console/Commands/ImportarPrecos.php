@@ -77,7 +77,7 @@ class ImportarPrecos extends Command
     			}
     		}
     		echo "PRECOS ".$empresa->ticker;
-    		sleep(20);
+    		sleep(5);
     		$this->output->progressAdvance();
     	}
     	$this->output->progressFinish();

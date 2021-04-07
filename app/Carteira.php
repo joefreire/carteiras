@@ -54,7 +54,12 @@ class Carteira extends Model
 			$precosMes = $precos->filter(function($value) use ($ano, $mes){
 				return $value->data->month == $mes && $value->data->year == $ano;
 			});
-			return $precosMes->first()->adjusted_close;
+			if(!empty($precosMes->first())){
+				return $precosMes->first()->adjusted_close;
+			}else{
+				return 0;
+			}
+			
 		}else{
 			return 0;
 		}
@@ -65,6 +70,16 @@ class Carteira extends Model
 		if(!empty($precoMes) && !empty($precoUltimoMes)){
 			$lucro = $precoMes->adjusted_close * 100 / $precoUltimoMes;
 			return round($lucro - 100, 2) . '%';
+		}else{
+			return 0;
+		}
+	}
+	public function lucroMensalValor(){
+		$precoMes = $this->precoMes();
+		$precoUltimoMes = $this->precoUltimoMes();
+		if(!empty($precoMes) && !empty($precoUltimoMes)){
+			$lucro = $precoMes->adjusted_close * 100 / $precoUltimoMes;
+			return round($lucro - 100, 2);
 		}else{
 			return 0;
 		}

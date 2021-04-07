@@ -22,7 +22,10 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 Route::any('/carteiras', 'HomeController@carteiras')->name('carteiras');
 Route::get('/carteira/nova', 'HomeController@novaCarteira')->name('novaCarteira');
+Route::get('/carteira/resultados', 'HomeController@resultados')->name('resultados');
+Route::post('/carteira/resultados', 'HomeController@resultados')->name('resultados');
 Route::post('/carteira/salva', 'HomeController@salvaCarteira')->name('salvaCarteira');
+Route::post('/carteira/check', 'HomeController@checkCarteira')->name('checkCarteira');
 
 
 Route::get('/teste', function () {

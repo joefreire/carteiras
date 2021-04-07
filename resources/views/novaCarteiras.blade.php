@@ -13,58 +13,58 @@
                 <div class="card-body">
                     <form action="{{ route('salvaCarteira') }}" method="POST">
                         @csrf
-                    <div class="form-group row">
-                        <div class="col-md-12 row">
-                            <div class="col-md-6">
-                                <label for="mes_inicio" class="col-form-label">Mês Carteira:</label>
-                                <select class="form-control" name="mes">
-                                    <option value="">Todos</option>
-                                    <option value="1">Janeiro</option>
-                                    <option value="2">Fevereiro</option> 
-                                    <option value="3">Março</option> 
-                                    <option value="4">Abril</option> 
-                                    <option value="5">Maio</option> 
-                                    <option value="6">Junho</option> 
-                                    <option value="7">Julho</option> 
-                                    <option value="8">Agosto</option> 
-                                    <option value="9">Setembro</option> 
-                                    <option value="10">Outubro</option> 
-                                    <option value="11">Novembro</option> 
-                                    <option value="12">Dezembro</option> 
+                        <div class="form-group row">
+                            <div class="col-md-12 row">
+                                <div class="col-md-6">
+                                    <label for="mes_inicio" class="col-form-label">Mês Carteira:</label>
+                                    <select class="form-control load" name="mes" id="mes">
+                                        <option value="">Todos</option>
+                                        <option value="1">Janeiro</option>
+                                        <option value="2">Fevereiro</option> 
+                                        <option value="3">Março</option> 
+                                        <option value="4">Abril</option> 
+                                        <option value="5">Maio</option> 
+                                        <option value="6">Junho</option> 
+                                        <option value="7">Julho</option> 
+                                        <option value="8">Agosto</option> 
+                                        <option value="9">Setembro</option> 
+                                        <option value="10">Outubro</option> 
+                                        <option value="11">Novembro</option> 
+                                        <option value="12">Dezembro</option> 
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="ano_inicio" class="col-form-label">Ano Carteira:</label>
+                                    <select class="form-control load" name="ano" id="ano">
+                                        <option value="">Todos</option>
+                                        @for ($i = 2015; $i <= date("Y"); $i++)
+                                        <option value="{{ $i }}">{{ $i }}</option>
+                                        @endfor
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-12">
+                                <label class="col-form-label">Corretora:</label>
+                                <select class="form-control load" name="corretora_id" id="corretora_id">
+                                    <option value="">Todas</option>
+                                    @foreach(\App\Corretora::All() as $corretora)
+                                    <option value="{{ $corretora->id }}">{{ $corretora->nome }}</option>
+                                    @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-6">
-                                <label for="ano_inicio" class="col-form-label">Ano Carteira:</label>
-                                <select class="form-control" name="ano">
-                                    <option value="">Todos</option>
-                                    @for ($i = 2015; $i <= date("Y"); $i++)
-                                    <option value="{{ $i }}">{{ $i }}</option>
-                                    @endfor
+
+                            <div class="col-md-12">
+                                <label class="col-form-label">Ativos:</label>
+                                <select class="form-control select2" name="empresa_id[]" id="empresa_id" multiple="">
+                                    @foreach(\App\Empresa::All() as $empresa)
+                                    <option value="{{ $empresa->id }}">{{ $empresa->ticker }}</option>
+                                    @endforeach
                                 </select>
                             </div>
-                        </div>
-
-
-                        <div class="col-md-12">
-                            <label class="col-form-label">Corretora:</label>
-                            <select class="form-control" name="corretora_id">
-                                <option value="">Todas</option>
-                                @foreach(\App\Corretora::All() as $corretora)
-                                <option value="{{ $corretora->id }}">{{ $corretora->nome }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-md-12">
-                            <label class="col-form-label">Ativos:</label>
-                            <select class="form-control select2" name="empresa_id[]" multiple="">
-                                @foreach(\App\Empresa::All() as $empresa)
-                                <option value="{{ $empresa->id }}">{{ $empresa->ticker }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div> 
-                    <button type="submit" class="btn btn-primary">Salvar</button> 
+                        </div> 
+                        <button type="submit" class="btn btn-primary">Salvar</button> 
                     </form>    
                 </div>     
 
@@ -81,6 +81,38 @@
 <script type="text/javascript">
     $(document).ready(function() {
         $('.select2').select2();
+        $('.load').on('change', function() {
+            if($('#ano').val() != '' && $('#mes').val() != '' && $('#corretora_id').val() != ''){
+                $.ajax(
+                {
+                    url: '{{route('checkCarteira')}}',
+                    type: "POST",
+                    data: {
+                        ano: $('#ano').val(), 
+                        mes: $('#mes').val(),
+                        corretora_id: $('#corretora_id').val(),
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function (data, textStatus, jqXHR)
+                    {
+                        console.log(data)
+                        $('#empresa_id').val(data).trigger('change')
+
+                    },
+                    error: function (jqXHR, textStatus, errorThrown)
+                    {
+                        if(jqXHR.status == 419){
+                            location.reload();
+                        }
+                        console.log("erro");
+                    }
+                });
+            }
+
+        });
+
     });
 </script>
 @endsection

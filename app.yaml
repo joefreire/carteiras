@@ -1,0 +1,42 @@
+runtime: php74
+
+runtime_config:
+  document_root: public
+  enable_stackdriver_integration: true
+
+beta_settings:
+   # for Cloud SQL, set this value to the Cloud SQL connection name,
+   # e.g. "project:region:cloudsql-instance"
+   cloud_sql_instances: "ssoprolife:us-east1:mysql-padrao"
+
+env_variables:
+  # Put production environment variables here.
+  APP_STORAGE: /tmp
+  VIEW_COMPILED_PATH: /tmp
+  LOG_CHANNEL: stackdriver
+
+  APP_NAME: Carteiras
+  APP_KEY: "base64:WzwZSvQT14lvRtlDTqflIYYy1I8C/JvLlEOXsWE9uGw:"
+  APP_DEBUG: true
+
+  DB_CONNECTION: mysql
+  DB_HOST: 127.0.0.1
+  DB_PORT: 3306
+  DB_DATABASE: guilherme
+  DB_USERNAME: guilherme
+  DB_PASSWORD: "mySQL#g00gl3"
+  DB_SOCKET: "/cloudsql/ssoprolife:us-east1:mysql-padrao"
+
+  SESSION_DRIVER: cookie
+  SESSION_LIFETIME: 500
+  STORAGE_DIR: /tmp
+
+handlers:
+- url: /(.*\.(gif|png|jpg|css|js))$
+  static_files: public/\1
+  upload: public/.*\.(gif|png|jpg|css|js)$
+
+- url: /.*
+  secure: always
+  redirect_http_response_code: 301
+  script: auto

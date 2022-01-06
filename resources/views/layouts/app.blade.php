@@ -61,6 +61,12 @@
                                 document.getElementById('logout-form').submit();">
                                 {{ __('Logout') }}
                             </a>
+                            <a class="dropdown-item" href="{{ route('carteiras') }}">
+                                {{ __('Carteiras') }}
+                            </a>
+                            <a class="dropdown-item" href="{{ route('novaCarteira') }}">
+                                {{ __('Adicionar Carteira') }}
+                            </a>
 
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                 @csrf

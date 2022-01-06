@@ -9,8 +9,14 @@
     "license": "MIT",
     "require": {
         "php": "^7.2.5",
+        "ext-gd": "*",
+        "ext-mbstring": "*",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
+        "monolog/monolog": "^2.0",
+        "google/cloud": "^0.172.0",
+        "google/cloud-error-reporting": "^0.18.4",
+        "google/cloud-logging": "^1.22",
         "guzzlehttp/guzzle": "^6.3",
         "laravel/framework": "^7.0",
         "laravel/tinker": "^2.0",
@@ -20,7 +26,6 @@
         "yajra/laravel-datatables-oracle": "~9.0"
     },
     "require-dev": {
-        "facade/ignition": "^2.0",
         "fzaninotto/faker": "^1.9.1",
         "mockery/mockery": "^1.3.1",
         "nunomaduro/collision": "^4.1",
@@ -54,6 +59,14 @@
     "prefer-stable": true,
     "scripts": {
         "post-autoload-dump": [
+            "mkdir -p /tmp/views",
+            "mkdir -p /tmp/storage/logs",
+            "mkdir -p /tmp/storage/app/public",
+            "mkdir -p /tmp/storage/framework/cache/data",
+            "mkdir -p /tmp/storage/framework/sessions",
+            "mkdir -p /tmp/storage/framework/testing",
+            "mkdir -p /tmp/storage/framework/views",
+            "mkdir -p ./bootstrap/cache/",
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
         ],
@@ -62,6 +75,13 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
+        ],
+        "post-install-cmd": [
+           "chmod -R 775 bootstrap\/cache",
+           "php artisan cache:clear"
+        ],     
+        "gcp-build": [
+            "composer install --no-dev"
         ]
     }
 }

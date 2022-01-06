@@ -50,7 +50,9 @@ class GeraCarteiraAleatoria extends Command
                 'nome'=>'ALEATORIA'
             ]);
         }
-        $carteirasExistentes = Carteira::where('corretora_id','!=', $corretora->id)->groupBy('mes','ano')->get();
+        $carteirasExistentes = Carteira::where('corretora_id','!=', $corretora->id)
+        ->groupBy('mes','ano')
+        ->get();
         foreach ($carteirasExistentes as $carteira){
             $ativos = Carteira::where('mes', $carteira->mes)->where('ano',$carteira->ano)->get();
             if($ativos->where('corretora_id', $corretora->id)->count() == 0){

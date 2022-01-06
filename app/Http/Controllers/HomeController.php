@@ -115,11 +115,10 @@ class HomeController extends Controller
                             $ativosEmLinha = $ativosEmLinha.','.$ativo->Empresa->ticker;
                         }
                         
-                    //dump($ativo->lucroMensalValor(), $ativo, $ativo->precoMes(), $ativo->precoUltimoMes());
                     }  
                     $resultado
                     ->push(['corretora_id' => $ativos->first()->corretora_id,
-                        'resultado' => round($valor, 2),
+                        'resultado' => round($valor/count($ativos), 2),
                         'mes' => $ativos->first()->mes,
                         'ano' => $ativos->first()->ano,
                         'periodo' => $mesAno,

@@ -49,7 +49,7 @@
                                 <label class="col-form-label">Corretora:</label>
                                 <select class="form-control load" name="corretora_id" id="corretora_id">
                                     <option value="">Todas</option>
-                                    @foreach(\App\Corretora::All() as $corretora)
+                                    @foreach(\App\Corretora::orderBy('nome')->get() as $corretora)
                                     <option value="{{ $corretora->id }}">{{ $corretora->nome }}</option>
                                     @endforeach
                                 </select>
@@ -112,6 +112,18 @@
             }
 
         });
+
+        @if(\Request::exists('mes'))
+        $('#mes').val('{{\Request::get('mes')}}');
+        @endif
+
+        @if(\Request::exists('ano'))
+        $('#ano').val('{{\Request::get('ano')}}');
+        @endif
+
+        @if(\Request::exists('corretora_id'))
+        $('#corretora_id').val('{{\Request::get('corretora_id')}}');
+        @endif
 
     });
 </script>

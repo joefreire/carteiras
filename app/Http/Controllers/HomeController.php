@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Carteira;
 use App\Corretora;
 use App\Empresa;
+use App\Retorno;
 use Yajra\DataTables\Html\Builder; 
 use Yajra\DataTables\DataTables;
 
@@ -70,6 +71,36 @@ class HomeController extends Controller
         }
         
         return view('carteiras');
+    }
+    public function retornos(Request $request, Builder $htmlBuilder)
+    {
+        if($request->ajax()){
+            $data = Retorno::with('Corretora')
+            ->when(!empty($request->corretora), function ($q) use ($request) {
+                return $q->where('corretora_id', $request->corretora);
+            })
+            ->when(!empty($request->mes_inicio), function ($q) use ($request) {
+                return $q->where('mes', '>=', $request->mes_inicio);
+            })
+            ->when(!empty($request->ano_inicio), function ($q) use ($request) {
+                return $q->where('ano', '>=', $request->ano_inicio);
+            })
+            ->when(!empty($request->ano_fim), function ($q) use ($request) {
+                return $q->where('ano', '<=', $request->ano_fim);
+            })
+            ->when(!empty($request->mes_fim), function ($q) use ($request) {
+                return $q->where('mes', '<=', $request->mes_fim);
+            });
+            return Datatables::of($data)
+            ->toJson();
+        }
+        
+        return view('retornos');
+    }
+    public function retornosPorAno(Request $request, Builder $htmlBuilder)
+    {
+        $corretoras = Corretora::all();
+        return view('retornosPorAno')->with('corretoras',$corretoras);
     }
     public function resultados(Request $request)
     {

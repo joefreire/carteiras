@@ -26,4 +26,6 @@ Route::get('/carteira/nova', 'HomeController@novaCarteira')->name('novaCarteira'
 Route::any('/carteira/resultados', 'HomeController@resultados')->name('resultados');
 Route::post('/carteira/salva', 'HomeController@salvaCarteira')->name('salvaCarteira');
 Route::post('/carteira/check', 'HomeController@checkCarteira')->name('checkCarteira');
+Route::any('/retornos', 'HomeController@retornos')->name('retornos');
+Route::any('/retorno-ano', 'HomeController@retornosPorAno')->name('retornosPorAno');
 

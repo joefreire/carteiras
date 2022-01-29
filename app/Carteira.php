@@ -74,6 +74,16 @@ class Carteira extends Model
 			return 0;
 		}
 	}
+	public function lucroMensalNumero(){
+		$precoMes = $this->precoMes();
+		$precoUltimoMes = $this->precoUltimoMes();
+		if(!empty($precoMes) && !empty($precoUltimoMes)){
+			$lucro = $precoMes->adjusted_close * 100 / $precoUltimoMes;
+			return round((($lucro-100)*0.01),4);
+		}else{
+			return 0;
+		}
+	}
 	public function lucroMensalValor(){
 		$precoMes = $this->precoMes();
 		$precoUltimoMes = $this->precoUltimoMes();

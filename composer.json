@@ -15,6 +15,7 @@
         "fruitcake/laravel-cors": "^1.0",
         "monolog/monolog": "^2.0",
         "google/cloud": "^0.172.0",
+        "markrogoyski/math-php": "^2",
         "google/cloud-error-reporting": "^0.18.4",
         "google/cloud-logging": "^1.22",
         "guzzlehttp/guzzle": "^6.3",

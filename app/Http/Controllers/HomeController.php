@@ -102,6 +102,11 @@ class HomeController extends Controller
         $corretoras = Corretora::all();
         return view('retornosPorAno')->with('corretoras',$corretoras);
     }
+    public function carteirasAnalisadas(Request $request)
+    {
+        $corretoras = Corretora::all();
+        return view('carteirasAnalisadas')->with('corretoras',$corretoras);
+    }
     public function resultados(Request $request)
     {
         if($request->ajax()){
@@ -110,8 +115,9 @@ class HomeController extends Controller
             ->join('empresas', 'empresas.id', '=', 'carteiras.ativo_id')
             ->join('corretoras', 'corretoras.id', '=', 'carteiras.corretora_id')
             ->select('carteiras.*')
-            //->where('corretora_id',7)
-            ->where('ano','>', 2017)
+            ->whereIn('corretora_id',[1,2,3,5,6,7,9,11,13,17,18,21,25]) //teste das corretoras ok
+            ->where('ano','>=', 2018)
+            ->where('ano','<=', 2021)
             //->where('mes', '<', 3)
             ->when(!empty($request->corretora), function ($q) use ($request) {
                 return $q->where('corretora_id', $request->corretora);

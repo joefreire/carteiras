@@ -39,15 +39,34 @@ class Corretora extends Model
 		$livre_risco = $cdi->pluck('retorno_mensal')->sortby('mes')->toArray();
 
 		$retorno_anual = $this->retorno_periodo();
-		if($retorno_anual = 0){
+		if($retorno_anual == 0){
 			return 0;
 		}
 		$retorno_anual_livre_risco = Cdi::retorno_periodo();
 		$risco_ativo_livre_risco = Descriptive::standardDeviation($livre_risco);
 		$risco_ativos = Descriptive::standardDeviation($retornos);
 
-
 		$ISg = (($retorno_anual - $retorno_anual_livre_risco) / ($risco_ativos - $risco_ativo_livre_risco));
+		return $ISg;
+
+	}
+	public function sortino_periodo(){
+		$retornos = $this->retornos->where('ano', '>=',2018)->where('ano', '<=',2021)
+		->sortby('mes')->pluck('retorno_mensal')->toArray();
+		if(count($retornos) == 0){
+			return 0;
+		}
+		$cdi = Cdi::all();
+		$livre_risco = $cdi->pluck('retorno_mensal')->sortby('mes')->toArray();
+
+		$retorno_anual = $this->retorno_periodo();
+		if($retorno_anual == 0){
+			return 0;
+		}
+		$retorno_anual_livre_risco = Cdi::retorno_periodo();
+		$risco_ativos = Descriptive::standardDeviation($retornos);
+
+		$ISg = (($retorno_anual - $retorno_anual_livre_risco) / $risco_ativos);
 		return $ISg;
 
 	}
@@ -62,8 +81,8 @@ class Corretora extends Model
 		$cdi = Cdi::where('ano', $ano)->get();
 		$livre_risco = $cdi->pluck('retorno_mensal')->sortby('mes')->toArray();
 
-		$retorno_anual = self::retorno_anual($retornos);
-		if($retorno_anual = 0){
+		$retorno_anual = $this->retornoAnual($ano);
+		if($retorno_anual == 0){
 			return 0;
 		}
 		$retorno_anual_livre_risco = self::retorno_anual($livre_risco);
@@ -72,7 +91,7 @@ class Corretora extends Model
 		$risco_ativos = Descriptive::standardDeviation($retornos);
 
 
-		$ISg = (($retorno_anual - $retorno_anual_livre_risco) / ($risco_ativos - $risco_ativo_livre_risco));
+		$ISg = (($retorno_anual - $retorno_anual_livre_risco) / ($risco_ativos - $risco_ativo_livre_risco) );
 		return $ISg;
 
 	}
@@ -82,25 +101,35 @@ class Corretora extends Model
 		if(count($retornos) == 0){
 			return 0;
 		}
-		if(count($retornos) < 12){
-			return 0;
-		}
 		$cdi = Cdi::where('ano', $ano)->get();
 		$livre_risco = $cdi->pluck('retorno_mensal')->sortby('mes')->toArray();
 
-		$retorno_anual = self::retorno_anual($retornos);
-		if($retorno_anual = 0){
+		$retorno_anual = $this->retornoAnual($ano);
+		if($retorno_anual == 0){
 			return 0;
 		}
 		$retorno_anual_livre_risco = self::retorno_anual($livre_risco);
 
 		$risco_ativo_livre_risco = Descriptive::standardDeviation($livre_risco);
-		$risco_ativos = Descriptive::standardDeviation($retornos);
-
-
-		$ISOg = (($retorno_anual - $retorno_anual_livre_risco) / ($risco_ativos - $risco_ativo_livre_risco));
+		if(count($retornos) == 1){
+			$risco_ativos = $retornos[0];
+		}else{
+			$risco_ativos = Descriptive::standardDeviation($retornos);
+		}
+		$ISOg = (($retorno_anual - $retorno_anual_livre_risco) / $risco_ativos );
 		return $ISOg;
 
+	}
+	public function todo_perido(){
+		$retornos = $this->retornos->where('ano', '>=',2018)->where('ano', '<=',2021)
+		->sortby('mes')->pluck('retorno_mensal')->toArray();
+		if(count($retornos) == 0){
+			return false;
+		}
+		if(count($retornos) < 48){
+			return false;
+		}
+		return true;
 	}
 	public static function retorno_anual($retornos){
 		$retorno_anual = 0;

@@ -28,4 +28,5 @@ Route::post('/carteira/salva', 'HomeController@salvaCarteira')->name('salvaCarte
 Route::post('/carteira/check', 'HomeController@checkCarteira')->name('checkCarteira');
 Route::any('/retornos', 'HomeController@retornos')->name('retornos');
 Route::any('/retorno-ano', 'HomeController@retornosPorAno')->name('retornosPorAno');
+Route::any('/carteiras-analisadas', 'HomeController@carteirasAnalisadas')->name('carteirasAnalisadas');
 
